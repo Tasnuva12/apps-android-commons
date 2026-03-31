@@ -13,6 +13,9 @@ import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.google.android.gms.security.ProviderInstaller
 import fr.free.nrw.commons.auth.LoginActivity
 import fr.free.nrw.commons.auth.SessionManager
 import fr.free.nrw.commons.bookmarks.items.BookmarkItemsTable
@@ -95,6 +98,19 @@ class CommonsApplication : MultiDexApplication() {
      */
     override fun onCreate() {
         super.onCreate()
+        // Fix SSL certificate trust failures on Android 6 and below (issue #6646)
+        // Android 6's CA store is frozen and missing modern roots (e.g. ISRG Root X1).
+        // Play Services patches the SSL provider at runtime.
+        try {
+            ProviderInstaller.installIfNeeded(this)
+        } catch (e: GooglePlayServicesRepairableException) {
+            // Play Services needs updating — silently log, don't crash
+            Log.w("CommonsApp", "Play Services needs update for SSL fix", e)
+        } catch (e: GooglePlayServicesNotAvailableException) {
+            // No Play Services (e.g. Huawei) — fall through to Network Security Config fallback
+            Log.w("CommonsApp", "Play Services unavailable, SSL fix not applied", e)
+        }
+
 
         instance = this
         init(this)
@@ -137,6 +153,7 @@ class CommonsApplication : MultiDexApplication() {
 
         // Fire progress callbacks for every 3% of uploaded content
         System.setProperty("in.yuvi.http.fluent.PROGRESS_TRIGGER_THRESHOLD", "3.0")
+
     }
 
     /**

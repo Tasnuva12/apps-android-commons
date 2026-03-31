@@ -19,11 +19,11 @@ if (isRunningOnTravisAndIsNotPRBuild) {
 
 android {
     namespace = "fr.free.nrw.commons"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "fr.free.nrw.commons"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 35
         versionCode = 1062
         versionName = "6.3.0"
@@ -250,6 +250,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.foundation.layout)
+    implementation(libs.play.services.basement)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
@@ -273,6 +274,7 @@ dependencies {
 
     // Dependency injector
     implementation(libs.dagger.android)
+
     implementation(libs.dagger.android.support)
     kapt(libs.dagger.android.processor)
     kapt(libs.dagger.compiler)
@@ -354,6 +356,9 @@ dependencies {
     annotationProcessor(libs.glide.compiler)
     kaptTest(libs.androidx.databinding.compiler)
     kaptAndroidTest(libs.androidx.databinding.compiler)
+
+    //
+    implementation("com.google.android.gms:play-services-basement:18.4.0")
 
     implementation(libs.coordinates2country.android) {
         exclude(group = "com.google.android", module = "android")
