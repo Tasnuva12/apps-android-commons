@@ -359,6 +359,8 @@ dependencies {
 
     //
     implementation("com.google.android.gms:play-services-basement:18.4.0")
+    //icons
+    implementation ("androidx.compose.material:material-icons-extended")
 
     implementation(libs.coordinates2country.android) {
         exclude(group = "com.google.android", module = "android")
